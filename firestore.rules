@@ -1,0 +1,64 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function isLoggedIn() {
+      return request.auth != null;
+    }
+
+    function isOwnDoc(uid) {
+      return isLoggedIn() && request.auth.uid == uid;
+    }
+
+    function isAdmin() {
+      return isLoggedIn()
+        && exists(/databases/$(database)/documents/users/$(request.auth.uid))
+        && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
+    }
+
+    // ── Products ──
+    match /products/{doc} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // ── Orders ──
+    // Anyone can create. Users can read their own orders (for tracking).
+    // Only admin can update status or delete.
+    match /orders/{doc} {
+      allow create: if true;
+      allow read: if isLoggedIn() && (
+        resource.data.userId == request.auth.uid || isAdmin()
+      );
+      allow update, delete: if isAdmin();
+    }
+
+    // ── Users ──
+    match /users/{uid} {
+      allow read: if true;
+      allow create: if isLoggedIn();
+      allow update: if isOwnDoc(uid) || isAdmin();
+      allow delete: if isAdmin();
+    }
+
+    // ── Testimonials ──
+    match /testimonials/{doc} {
+      allow read: if true;
+      allow create: if isLoggedIn();
+      allow update, delete: if isAdmin();
+    }
+
+    // ── Bookings ──
+    match /bookings/{doc} {
+      allow create: if true;
+      allow read, update, delete: if isAdmin();
+    }
+
+    // ── Contact Messages ──
+    match /messages/{doc} {
+      allow create: if true;
+      allow read, delete: if isAdmin();
+    }
+
+  }
+}

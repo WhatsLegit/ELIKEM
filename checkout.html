@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Checkout - ELIKEM DOTS</title>
+  <link rel="stylesheet" href="css/style.css">
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+</head>
+<body>
+
+  <!-- ── Global Video Background ── -->
+  <div class="video-bg-wrapper">
+    <video autoplay muted loop playsinline>
+      <source src="images/istockphoto-2150178677-640_adpp_is.mp4" type="video/mp4">
+      <source src="images/istockphoto-1035031016-640_adpp_is.mp4" type="video/mp4">
+    </video>
+  </div>
+
+  <!-- ── Navbar ── -->
+  <nav class="navbar">
+    <div class="nav-container">
+      <a href="index.html" class="logo">
+        <svg class="logo-svg" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+          <rect x="45" y="20" width="10" height="60" rx="2" fill="#2563EB"/>
+          <rect x="20" y="45" width="60" height="10" rx="2" fill="#2563EB"/>
+          <circle cx="25" cy="25" r="5" fill="#16a34a"/>
+          <circle cx="75" cy="25" r="5" fill="#16a34a"/>
+          <circle cx="25" cy="75" r="5" fill="#16a34a"/>
+          <circle cx="75" cy="75" r="5" fill="#16a34a"/>
+        </svg>
+        ELIKEM DOTS
+      </a>
+      <ul class="nav-links">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="shop.html">Pharmacy</a></li>
+        <li><a href="cart.html">← Back to Cart</a></li>
+        <li><a href="login.html">Login</a></li>
+        <li><a href="signup.html" class="btn" style="padding:0.45rem 1.1rem; font-size:0.88rem;">Sign Up</a></li>
+      </ul>
+      <!-- Mobile action icons -->
+      <div class="nav-mobile-actions" id="navMobileActions">
+        <a href="cart.html" class="nav-cart-btn" id="navCartBtn" aria-label="Cart">
+          <svg viewBox="0 0 24 24"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 001.99 1.61h9.72a2 2 0 001.99-1.61L23 6H6"/></svg>
+          <span class="nav-cart-badge hidden" id="navCartBadge">0</span>
+        </a>
+        <a href="profile.html" class="nav-avatar-btn" id="navAvatarBtn" aria-label="Profile" style="display:none;">?</a>
+      </div>
+      <!-- Hamburger -->
+      <button class="hamburger" id="hamburgerBtn" aria-label="Open menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </nav>
+  <div class="mobile-nav" id="mobileNav">
+    <button class="mobile-nav-close" id="mobileNavClose">✕</button>
+    <a href="index.html">Home</a>
+    <a href="shop.html">Pharmacy</a>
+    <a href="services.html">Wound Care</a>
+    <a href="cart.html">Cart</a>
+    <a href="login.html">Login</a>
+    <a href="signup.html" class="mobile-nav-signup">Sign Up</a>
+  </div>
+
+  <!-- ── Auth gate — shown while checking login ── -->
+  <div id="authGate" style="display:flex; align-items:center; justify-content:center; min-height:100vh; flex-direction:column; gap:1rem;">
+    <div class="loading"></div>
+    <p style="color:#777; font-size:0.9rem;">Checking your account...</p>
+  </div>
+
+  <!-- ── Checkout Content (hidden until auth confirmed) ── -->
+  <div id="checkoutContent" style="display:none;">
+    <section class="section" style="padding-top: 7rem;">
+      <h1 class="section-title">Checkout</h1>
+
+      <form id="checkoutForm" class="glass" style="max-width:580px; margin:0 auto; padding:3rem;">
+        <div class="form-group">
+          <label>Full Name</label>
+          <input type="text" name="name" placeholder="Your full name" required>
+        </div>
+        <div class="form-group">
+          <label>Phone Number</label>
+          <input type="tel" name="phone" placeholder="Your phone number" required>
+        </div>
+        <div class="form-group">
+          <label>Email</label>
+          <input type="email" name="email" placeholder="your@email.com" required>
+        </div>
+        <div class="form-group">
+          <label>Delivery Address</label>
+          <textarea name="address" rows="3" placeholder="Your full delivery address..." required></textarea>
+        </div>
+        <div class="form-group">
+          <label>Country</label>
+          <input type="text" name="country" placeholder="Your country" required>
+        </div>
+        <div class="form-group">
+          <label>Order Notes (optional)</label>
+          <textarea name="notes" rows="2" placeholder="Any special instructions..."></textarea>
+        </div>
+
+        <!-- Order Summary -->
+        <div id="orderSummary" style="background:rgba(0,0,0,0.04); padding:1.2rem; margin:1.5rem 0; border-radius:12px; border:1px solid rgba(0,0,0,0.08);">
+          <p style="font-weight:600; margin-bottom:0.5rem;">Order Summary</p>
+          <div id="summaryItems" style="color:#555; font-size:0.9rem;">Loading cart...</div>
+          <div style="margin-top:0.8rem; font-weight:700; font-size:1.1rem;">
+            Total: <span id="summaryTotal">$0.00</span>
+          </div>
+        </div>
+
+        <button type="submit" class="btn" style="width:100%; padding:1.1rem;">Place Order</button>
+      </form>
+    </section>
+
+    <!-- ── Footer ── -->
+    <footer>
+      <div class="logo" style="justify-content:center; margin-bottom:0.5rem;">ELIKEM DOTS</div>
+      <p>&copy; 2024 ELIKEM DOTS. All rights reserved.</p>
+    </footer>
+  </div>
+
+  <script type="module">
+    import { checkout, getCart } from './js/cart.js';
+    import { requireAuth } from './js/auth.js';
+    import { db, collections } from './js/firebase.js';
+    import { doc, getDoc } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
+    import './js/ui.js';
+
+    // ── Block unauthenticated users ──
+    const user = await requireAuth('login.html');
+
+    // Auth confirmed — show checkout, hide gate
+    document.getElementById('authGate').style.display = 'none';
+    document.getElementById('checkoutContent').style.display = 'block';
+
+    // ── Pre-fill form with user's saved details ──
+    try {
+      const snap = await getDoc(doc(db, collections.users, user.uid));
+      if (snap.exists()) {
+        const data = snap.data();
+        if (data.email)   document.querySelector('input[name="email"]').value   = data.email;
+        if (data.phone)   document.querySelector('input[name="phone"]').value   = data.phone;
+        if (data.country) document.querySelector('input[name="country"]').value = data.country;
+      }
+    } catch (e) { /* non-critical */ }
+
+    // ── Show cart summary ──
+    const cart = getCart();
+    const summaryItems = document.getElementById('summaryItems');
+    const summaryTotal = document.getElementById('summaryTotal');
+
+    if (cart.length === 0) {
+      summaryItems.innerHTML = 'Your cart is empty. <a href="shop.html" style="color:#2563EB;font-weight:600;">Shop now</a>';
+    } else {
+      let html = '';
+      let total = 0;
+      cart.forEach(item => {
+        const lineTotal = item.price * item.quantity;
+        total += lineTotal;
+        html += '<div style="display:flex;justify-content:space-between;margin-bottom:0.3rem;">'
+              + '<span>' + item.name + ' &times; ' + item.quantity + '</span>'
+              + '<span style="font-weight:600;">$' + lineTotal.toFixed(2) + '</span>'
+              + '</div>';
+      });
+      summaryItems.innerHTML = html;
+      summaryTotal.textContent = '$' + total.toFixed(2);
+    }
+
+    // ── Place order ──
+    document.getElementById('checkoutForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const btn = e.target.querySelector('button[type="submit"]');
+      btn.textContent = 'Placing order...';
+      btn.disabled = true;
+      const formData = Object.fromEntries(new FormData(e.target));
+      formData.userId = user.uid;
+      try {
+        await checkout(formData);
+        alert('Order placed successfully! We will contact you shortly.');
+        window.location.href = 'index.html';
+      } catch (error) {
+        btn.textContent = 'Place Order';
+        btn.disabled = false;
+        alert('Error placing order: ' + error.message);
+      }
+    });
+  </script>
+  <script>lucide.createIcons();</script>
+
+</body>
+</html>

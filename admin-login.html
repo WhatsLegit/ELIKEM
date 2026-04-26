@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Login - ELIKEM DOTS</title>
+  <link rel="stylesheet" href="css/style.css">
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+  <style>
+    .admin-login-card {
+      width: 100%;
+      max-width: 420px;
+      padding: 3rem;
+      border-radius: 28px;
+      z-index: 2;
+    }
+
+    .admin-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      background: rgba(0,0,0,0.07);
+      border: 1px solid rgba(0,0,0,0.1);
+      border-radius: 20px;
+      padding: 0.3rem 0.9rem;
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: #555;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      margin-bottom: 1.2rem;
+    }
+
+    .admin-badge svg {
+      width: 12px;
+      height: 12px;
+      stroke: #555;
+    }
+
+    .input-wrapper {
+      position: relative;
+    }
+
+    .input-wrapper input {
+      padding-right: 3rem;
+    }
+
+    .toggle-password {
+      position: absolute;
+      right: 1rem;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: #999;
+      padding: 0;
+      display: flex;
+      align-items: center;
+      transition: color 0.2s;
+    }
+
+    .toggle-password:hover { color: #111; }
+    .toggle-password svg { width: 18px; height: 18px; stroke: currentColor; }
+
+    .error-msg {
+      background: rgba(220, 38, 38, 0.08);
+      border: 1px solid rgba(220, 38, 38, 0.2);
+      color: #dc2626;
+      padding: 0.75rem 1rem;
+      border-radius: 10px;
+      font-size: 0.88rem;
+      margin-bottom: 1rem;
+      display: none;
+    }
+
+    .error-msg.show { display: block; }
+
+    .login-btn {
+      width: 100%;
+      padding: 1.1rem;
+      margin: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+    }
+
+    .login-btn svg { width: 18px; height: 18px; stroke: currentColor; }
+
+    .spinner {
+      width: 18px;
+      height: 18px;
+      border: 2px solid rgba(255,255,255,0.3);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+      display: none;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+  </style>
+</head>
+<body>
+
+  <!-- ── Video Background ── -->
+  <div class="video-bg-wrapper">
+    <video autoplay muted loop playsinline>
+      <source src="images/istockphoto-1035031016-640_adpp_is.mp4" type="video/mp4">
+      <source src="images/istockphoto-2150178677-640_adpp_is.mp4" type="video/mp4">
+    </video>
+  </div>
+
+  <!-- ── Navbar ── -->
+  <nav class="navbar">
+    <div class="nav-container">
+      <a href="index.html" class="logo">
+        <svg class="logo-svg" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+          <rect x="45" y="20" width="10" height="60" rx="2" fill="#2563EB"/>
+          <rect x="20" y="45" width="60" height="10" rx="2" fill="#2563EB"/>
+          <circle cx="25" cy="25" r="5" fill="#16a34a"/>
+          <circle cx="75" cy="25" r="5" fill="#16a34a"/>
+          <circle cx="25" cy="75" r="5" fill="#16a34a"/>
+          <circle cx="75" cy="75" r="5" fill="#16a34a"/>
+        </svg>
+        ELIKEM DOTS
+      </a>
+      <a href="index.html" style="color:#555; font-size:0.9rem; text-decoration:none;">← Back to site</a>
+    </div>
+  </nav>
+
+  <!-- ── Login Form ── -->
+  <section class="hero">
+    <video class="hero-video" autoplay muted loop playsinline>
+      <source src="images/istockphoto-2150178677-640_adpp_is.mp4" type="video/mp4">
+      <source src="images/istockphoto-1035031016-640_adpp_is.mp4" type="video/mp4">
+    </video>
+    <div class="hero-overlay"></div>
+
+    <div class="admin-login-card glass">
+      <div style="text-align:center; margin-bottom:2rem;">
+        <div class="form-icon-header" style="margin-bottom:1rem;">
+          <i data-lucide="shield-check"></i>
+        </div>
+        <div class="admin-badge">
+          <i data-lucide="lock"></i>
+          Admin Access
+        </div>
+        <h2 style="font-size:1.8rem; font-weight:700; color:#111; margin-bottom:0.3rem;">Admin Login</h2>
+        <p style="color:#777; font-size:0.9rem;">Restricted to authorised personnel only</p>
+      </div>
+
+      <div id="errorMsg" class="error-msg"></div>
+
+      <form id="adminLoginForm">
+        <div class="form-group">
+          <label>Email Address</label>
+          <input type="email" id="adminEmail" placeholder="admin@elikemdots.com" required autocomplete="email">
+        </div>
+        <div class="form-group">
+          <label>Password</label>
+          <div class="input-wrapper">
+            <input type="password" id="adminPassword" placeholder="Your password" required autocomplete="current-password">
+            <button type="button" class="toggle-password" id="togglePwd" aria-label="Toggle password visibility">
+              <i data-lucide="eye"></i>
+            </button>
+          </div>
+        </div>
+
+        <button type="submit" class="btn login-btn" id="loginBtn">
+          <span id="btnText">Sign In</span>
+          <div class="spinner" id="btnSpinner"></div>
+        </button>
+      </form>
+
+      <p style="text-align:center; margin-top:1.5rem; font-size:0.85rem; color:#aaa;">
+        Not an admin? <a href="login.html" style="color:#555; font-weight:600;">Go to customer login</a>
+      </p>
+    </div>
+  </section>
+
+  <script type="module">
+    import { adminAuth, adminDb, collections } from './js/firebase-admin.js';
+    import {
+      signInWithEmailAndPassword,
+      onAuthStateChanged
+    } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
+    import { doc, getDoc } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
+
+    // If already logged in as admin (on the admin app), redirect immediately
+    onAuthStateChanged(adminAuth, async (user) => {
+      if (user) {
+        const isAdminUser = await checkAdmin(user.uid);
+        if (isAdminUser) window.location.replace('admin.html');
+      }
+    });
+
+    async function checkAdmin(uid) {
+      try {
+        const snap = await getDoc(doc(adminDb, collections.users, uid));
+        return snap.exists() && snap.data().role === 'admin';
+      } catch { return false; }
+    }
+
+    function showError(msg) {
+      const el = document.getElementById('errorMsg');
+      el.textContent = msg;
+      el.classList.add('show');
+    }
+
+    function hideError() {
+      document.getElementById('errorMsg').classList.remove('show');
+    }
+
+    function setLoading(loading) {
+      const btn     = document.getElementById('loginBtn');
+      const text    = document.getElementById('btnText');
+      const spinner = document.getElementById('btnSpinner');
+      btn.disabled          = loading;
+      text.style.display    = loading ? 'none'  : 'inline';
+      spinner.style.display = loading ? 'block' : 'none';
+    }
+
+    // Toggle password visibility
+    document.getElementById('togglePwd').addEventListener('click', () => {
+      const input = document.getElementById('adminPassword');
+      const icon  = document.querySelector('#togglePwd i');
+      if (input.type === 'password') {
+        input.type = 'text';
+        icon.setAttribute('data-lucide', 'eye-off');
+      } else {
+        input.type = 'password';
+        icon.setAttribute('data-lucide', 'eye');
+      }
+      lucide.createIcons();
+    });
+
+    // Login form submit
+    document.getElementById('adminLoginForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      hideError();
+      setLoading(true);
+
+      const email    = document.getElementById('adminEmail').value.trim();
+      const password = document.getElementById('adminPassword').value;
+
+      try {
+        const credential  = await signInWithEmailAndPassword(adminAuth, email, password);
+        const isAdminUser = await checkAdmin(credential.user.uid);
+
+        if (!isAdminUser) {
+          await adminAuth.signOut();
+          showError('Access denied. This account does not have admin privileges.');
+          setLoading(false);
+          return;
+        }
+
+        window.location.replace('admin.html');
+
+      } catch (err) {
+        setLoading(false);
+        const code = err.code || '';
+        if (code === 'auth/user-not-found' || code === 'auth/wrong-password' || code === 'auth/invalid-credential') {
+          showError('Incorrect email or password. Please try again.');
+        } else if (code === 'auth/too-many-requests') {
+          showError('Too many failed attempts. Please wait a moment and try again.');
+        } else if (code === 'auth/network-request-failed') {
+          showError('Network error. Please check your connection.');
+        } else {
+          showError(err.message);
+        }
+      }
+    });
+  </script>
+  <script>lucide.createIcons();</script>
+</body>
+</html>

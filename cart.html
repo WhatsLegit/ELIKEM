@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Shopping Cart - ELIKEM DOTS</title>
+  <link rel="stylesheet" href="css/style.css">
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+</head>
+<body>
+
+  <!-- ── Global Video Background ── -->
+  <div class="video-bg-wrapper">
+    <video autoplay muted loop playsinline>
+      <source src="images/istockphoto-1035031016-640_adpp_is.mp4" type="video/mp4">
+      <source src="images/istockphoto-2150178677-640_adpp_is.mp4" type="video/mp4">
+    </video>
+  </div>
+
+  <!-- ── Navbar ── -->
+  <nav class="navbar">
+    <div class="nav-container">
+      <a href="index.html" class="logo">
+        <svg class="logo-svg" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+          <rect x="45" y="20" width="10" height="60" rx="2" fill="#2563EB"/>
+          <rect x="20" y="45" width="60" height="10" rx="2" fill="#2563EB"/>
+          <circle cx="25" cy="25" r="5" fill="#16a34a"/>
+          <circle cx="75" cy="25" r="5" fill="#16a34a"/>
+          <circle cx="25" cy="75" r="5" fill="#16a34a"/>
+          <circle cx="75" cy="75" r="5" fill="#16a34a"/>
+        </svg>
+        ELIKEM DOTS
+      </a>
+      <ul class="nav-links">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="shop.html">Pharmacy</a></li>
+        <li><a href="services.html">Wound Care</a></li>
+        <li><a href="index.html#testimonials">Testimonials</a></li>
+        <li><a href="index.html#contact">Contact</a></li>
+        <li><a href="cart.html" class="active">Cart (<span class="cart-count">0</span>)</a></li>
+        <li><a href="login.html">Login</a></li>
+        <li><a href="signup.html" class="btn" style="padding:0.45rem 1.1rem; font-size:0.88rem;">Sign Up</a></li>
+      </ul>
+      <!-- Mobile action icons -->
+      <div class="nav-mobile-actions" id="navMobileActions">
+        <a href="cart.html" class="nav-cart-btn" id="navCartBtn" aria-label="Cart">
+          <svg viewBox="0 0 24 24"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 001.99 1.61h9.72a2 2 0 001.99-1.61L23 6H6"/></svg>
+          <span class="nav-cart-badge hidden" id="navCartBadge">0</span>
+        </a>
+        <a href="profile.html" class="nav-avatar-btn" id="navAvatarBtn" aria-label="Profile" style="display:none;">?</a>
+      </div>
+      <!-- Hamburger -->
+      <button class="hamburger" id="hamburgerBtn" aria-label="Open menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </nav>
+  <div class="mobile-nav" id="mobileNav">
+    <button class="mobile-nav-close" id="mobileNavClose">✕</button>
+    <a href="index.html">Home</a>
+    <a href="shop.html">Pharmacy</a>
+    <a href="services.html">Wound Care</a>
+    <a href="index.html#testimonials">Testimonials</a>
+    <a href="index.html#contact">Contact</a>
+    <a href="cart.html">Cart</a>
+    <a href="login.html">Login</a>
+    <a href="signup.html" class="mobile-nav-signup">Sign Up</a>
+  </div>
+
+  <!-- ── Cart Content ── -->
+  <section class="section" style="padding-top: 7rem;">
+    <h1 class="section-title">Your Cart</h1>
+
+    <div style="max-width:900px; margin:0 auto;">
+      <table class="cart-table">
+        <thead>
+          <tr>
+            <th>Image</th>
+            <th>Product</th>
+            <th>Price</th>
+            <th>Quantity</th>
+            <th>Total</th>
+            <th>Remove</th>
+          </tr>
+        </thead>
+        <tbody id="cartContainer">
+          <tr>
+            <td colspan="6" style="text-align:center; padding:3rem; color:#888;">
+              Your cart is empty. <a href="shop.html" style="color:#111; font-weight:600;">Shop now →</a>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- Mobile card list (shown on small screens) -->
+      <div id="cartCardList"></div>
+
+      <div class="cart-total" style="margin-bottom:2rem;">
+        Total: <span id="cartTotal">$0.00</span>
+      </div>
+
+      <!-- ── Order options ── -->
+      <div style="background:rgba(255,255,255,0.88);backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,0.6);
+                  border-radius:24px;padding:2rem;box-shadow:0 8px 40px rgba(0,0,0,0.1);">
+
+        <p style="font-size:0.75rem;font-weight:700;color:#aaa;text-transform:uppercase;letter-spacing:1.2px;margin-bottom:1.4rem;">
+          Choose how to pay &amp; order
+        </p>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem;">
+
+          <!-- Online checkout -->
+          <div style="border:1px solid rgba(37,99,235,0.2);border-radius:14px;padding:1.2rem;text-align:center;background:rgba(37,99,235,0.03);">
+            <div style="width:44px;height:44px;background:rgba(37,99,235,0.1);border-radius:12px;display:flex;align-items:center;justify-content:center;margin:0 auto 0.7rem;">
+              <i data-lucide="credit-card" style="width:20px;height:20px;stroke:#2563EB;"></i>
+            </div>
+            <h3 style="font-size:0.88rem;font-weight:700;color:#111;margin-bottom:0.3rem;">Online Checkout</h3>
+            <p style="font-size:0.75rem;color:#888;margin-bottom:0.8rem;line-height:1.5;">Fill in delivery details and place your order.</p>
+            <a href="checkout.html" class="btn" id="checkoutBtn" style="width:100%;display:block;text-align:center;padding:0.65rem;font-size:0.82rem;box-sizing:border-box;">Checkout</a>
+          </div>
+
+          <!-- WhatsApp order -->
+          <div style="border:1px solid rgba(37,211,102,0.25);border-radius:14px;padding:1.2rem;text-align:center;background:rgba(37,211,102,0.03);">
+            <div style="width:44px;height:44px;background:rgba(37,211,102,0.12);border-radius:12px;display:flex;align-items:center;justify-content:center;margin:0 auto 0.7rem;">
+              <svg width="20" height="20" fill="#25D366" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893A11.821 11.821 0 0020.885 3.488"/></svg>
+            </div>
+            <h3 style="font-size:0.88rem;font-weight:700;color:#111;margin-bottom:0.3rem;">WhatsApp Order</h3>
+            <p style="font-size:0.75rem;color:#888;margin-bottom:0.8rem;line-height:1.5;">Send order directly. No account needed.</p>
+            <button id="whatsappOrderBtn" style="width:100%;background:#25D366;color:#fff;border:none;border-radius:50px;padding:0.65rem;font-size:0.82rem;font-weight:600;cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:0.4rem;" onmouseover="this.style.background='#1ebe5d'" onmouseout="this.style.background='#25D366'">
+              <svg width="14" height="14" fill="white" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893A11.821 11.821 0 0020.885 3.488"/></svg>
+              WhatsApp
+            </button>
+          </div>
+        </div>
+
+        <!-- ── MoMo Payment ── -->
+        <div style="border:2px solid rgba(255,204,0,0.4);border-radius:18px;overflow:hidden;margin-bottom:1rem;">
+          <div style="background:linear-gradient(135deg,#FFD700,#FFA500);padding:0.9rem 1.2rem;display:flex;align-items:center;gap:0.8rem;">
+            <div style="width:38px;height:38px;background:rgba(255,255,255,0.3);border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
+            </div>
+            <div>
+              <div style="font-weight:800;color:#111;font-size:0.95rem;">Mobile Money Payment</div>
+              <div style="font-size:0.7rem;color:rgba(0,0,0,0.55);">MTN MoMo &middot; Telecel Cash &middot; AT Money</div>
+            </div>
+          </div>
+
+          <div style="padding:1rem 1.2rem;background:rgba(255,249,230,0.6);">
+            <!-- Number card -->
+            <div style="background:white;border-radius:12px;padding:0.9rem 1rem;box-shadow:0 2px 10px rgba(0,0,0,0.06);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:0.6rem;margin-bottom:0.8rem;">
+              <div>
+                <div style="font-size:0.65rem;color:#aaa;font-weight:600;text-transform:uppercase;letter-spacing:0.8px;">Send to</div>
+                <div style="font-size:1.3rem;font-weight:800;color:#111;letter-spacing:1px;line-height:1.2;">0256868792</div>
+                <div style="font-size:0.82rem;font-weight:600;color:#555;">ELIKEM DOTSE</div>
+                <span style="display:inline-flex;align-items:center;gap:3px;background:#FFD700;color:#111;padding:0.15rem 0.6rem;border-radius:20px;font-size:0.65rem;font-weight:700;margin-top:4px;">
+                  <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+                  MTN Mobile Money
+                </span>
+              </div>
+              <button onclick="var b=this;navigator.clipboard.writeText('0256868792').then(function(){b.textContent='Copied!';setTimeout(function(){b.textContent='Copy';},2000);})" style="background:#111;color:#fff;border:none;border-radius:8px;padding:0.5rem 0.9rem;font-size:0.78rem;font-weight:600;cursor:pointer;font-family:inherit;" onmouseover="this.style.background='#333'" onmouseout="this.style.background='#111'">Copy</button>
+            </div>
+
+            <!-- Warning -->
+            <div style="display:flex;align-items:flex-start;gap:0.5rem;background:rgba(220,38,38,0.06);border:1px solid rgba(220,38,38,0.2);border-radius:10px;padding:0.65rem 0.9rem;margin-bottom:1rem;">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#dc2626" stroke-width="2.5" stroke-linecap="round" style="flex-shrink:0;margin-top:1px;"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+              <p style="font-size:0.76rem;color:#dc2626;font-weight:600;margin:0;line-height:1.5;">Always confirm the name <strong>ELIKEM DOTSE</strong> appears before sending.</p>
+            </div>
+
+            <!-- Network accordions -->
+            <p style="font-size:0.68rem;font-weight:700;color:#888;text-transform:uppercase;letter-spacing:0.8px;margin-bottom:0.6rem;">How to send</p>
+            <div style="display:flex;flex-direction:column;gap:0.4rem;">
+
+              <details style="background:white;border-radius:10px;overflow:hidden;box-shadow:0 1px 6px rgba(0,0,0,0.05);">
+                <summary style="padding:0.75rem 0.9rem;cursor:pointer;display:flex;align-items:center;gap:0.6rem;list-style:none;font-weight:700;font-size:0.85rem;color:#111;">
+                  <span style="width:28px;height:28px;background:#FFD700;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:0.6rem;font-weight:800;color:#111;flex-shrink:0;">MTN</span>
+                  MTN MoMo
+                  <svg style="margin-left:auto;" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#aaa" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+                </summary>
+                <div style="padding:0 0.9rem 0.9rem;border-top:1px solid rgba(0,0,0,0.05);">
+                  <ol style="margin:0.6rem 0 0;padding-left:1.1rem;font-size:0.8rem;color:#444;line-height:2;">
+                    <li>Dial <strong>*170#</strong></li>
+                    <li>Select <strong>1 &ndash; Transfer Money</strong></li>
+                    <li>Select <strong>1 &ndash; MoMo User</strong></li>
+                    <li>Enter: <strong style="color:#2563EB;">0256868792</strong></li>
+                    <li>Confirm: <strong>ELIKEM DOTSE</strong> &#10004;</li>
+                    <li>Enter amount &rarr; Enter PIN</li>
+                  </ol>
+                </div>
+              </details>
+
+              <details style="background:white;border-radius:10px;overflow:hidden;box-shadow:0 1px 6px rgba(0,0,0,0.05);">
+                <summary style="padding:0.75rem 0.9rem;cursor:pointer;display:flex;align-items:center;gap:0.6rem;list-style:none;font-weight:700;font-size:0.85rem;color:#111;">
+                  <span style="width:28px;height:28px;background:#E30613;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:0.58rem;font-weight:800;color:#fff;flex-shrink:0;">TEL</span>
+                  Telecel Cash
+                  <svg style="margin-left:auto;" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#aaa" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+                </summary>
+                <div style="padding:0 0.9rem 0.9rem;border-top:1px solid rgba(0,0,0,0.05);">
+                  <ol style="margin:0.6rem 0 0;padding-left:1.1rem;font-size:0.8rem;color:#444;line-height:2;">
+                    <li>Dial <strong>*110#</strong></li>
+                    <li>Send Money &rarr; Other Networks &rarr; MTN</li>
+                    <li>Enter: <strong style="color:#2563EB;">0256868792</strong></li>
+                    <li>Enter amount</li>
+                    <li>Confirm: <strong>ELIKEM DOTSE</strong> &#10004;</li>
+                    <li>Enter PIN</li>
+                  </ol>
+                </div>
+              </details>
+
+              <details style="background:white;border-radius:10px;overflow:hidden;box-shadow:0 1px 6px rgba(0,0,0,0.05);">
+                <summary style="padding:0.75rem 0.9rem;cursor:pointer;display:flex;align-items:center;gap:0.6rem;list-style:none;font-weight:700;font-size:0.85rem;color:#111;">
+                  <span style="width:28px;height:28px;background:#0066CC;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:0.58rem;font-weight:800;color:#fff;flex-shrink:0;">AT</span>
+                  AirtelTigo (AT Money)
+                  <svg style="margin-left:auto;" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#aaa" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+                </summary>
+                <div style="padding:0 0.9rem 0.9rem;border-top:1px solid rgba(0,0,0,0.05);">
+                  <ol style="margin:0.6rem 0 0;padding-left:1.1rem;font-size:0.8rem;color:#444;line-height:2;">
+                    <li>Dial <strong>*110#</strong></li>
+                    <li>Send Money &rarr; Other Network &rarr; MTN</li>
+                    <li>Enter: <strong style="color:#2563EB;">0256868792</strong></li>
+                    <li>Enter amount</li>
+                    <li>Confirm: <strong>ELIKEM DOTSE</strong> &#10004;</li>
+                    <li>Enter PIN</li>
+                  </ol>
+                </div>
+              </details>
+            </div>
+
+            <!-- After payment -->
+            <div style="margin-top:0.8rem;background:rgba(37,99,235,0.06);border:1px solid rgba(37,99,235,0.15);border-radius:10px;padding:0.7rem 0.9rem;display:flex;align-items:flex-start;gap:0.5rem;">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#2563EB" stroke-width="2.5" stroke-linecap="round" style="flex-shrink:0;margin-top:1px;"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.81a19.79 19.79 0 01-3.07-8.67A2 2 0 012 .18h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 14.92z"/></svg>
+              <p style="font-size:0.76rem;color:#2563EB;font-weight:600;margin:0;line-height:1.5;">After payment, send your order &amp; MoMo reference via <a href="https://wa.me/233256868792" target="_blank" style="color:#111;text-decoration:underline;">WhatsApp (0256868792)</a> to confirm.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Continue shopping -->
+        <div style="text-align:center;">
+          <a href="shop.html" class="btn btn-outline" style="font-size:0.85rem;padding:0.6rem 1.6rem;">&#8592; Continue Shopping</a>
+        </div>
+
+      </div>
+
+      <p id="loginPrompt" style="display:none; text-align:center; margin-top:1rem; font-size:0.88rem; color:#dc2626;
+         background:rgba(220,38,38,0.06);border:1px solid rgba(220,38,38,0.15);border-radius:10px;padding:0.8rem;">
+        You need to <a href="login.html" style="color:#2563EB; font-weight:600;">log in</a> or
+        <a href="signup.html" style="color:#2563EB; font-weight:600;">create an account</a> to use online checkout.
+        <br><span style="color:#555;font-size:0.82rem;">You can still order via WhatsApp without an account.</span>
+      </p>
+    </div>
+  </section>
+
+  <!-- ── Footer ── -->
+  <footer>
+    <div class="logo" style="justify-content:center; margin-bottom:0.5rem;">ELIKEM DOTS</div>
+    <p>&copy; 2024 ELIKEM DOTS. All rights reserved.</p>
+  </footer>
+
+  <!-- ── WhatsApp Float ── -->
+  <a href="https://wa.me/233544374581" class="whatsapp-float float" target="_blank" rel="noopener">
+    <svg width="26" height="26" fill="white" viewBox="0 0 24 24">
+      <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893A11.821 11.821 0 0020.885 3.488"/>
+    </svg>
+  </a>
+
+  <script type="module">
+    import { updateCartUI, updateQuantity, removeFromCart, addToCart, getCart } from './js/cart.js';
+    import { auth } from './js/firebase.js';
+    import './js/auth.js';
+    import { onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
+    import './js/ui.js';
+
+    window.updateQuantity = updateQuantity;
+    window.removeFromCart = removeFromCart;
+    window.addToCart = addToCart;
+    updateCartUI();
+
+    const checkoutBtn = document.getElementById('checkoutBtn');
+    const loginPrompt = document.getElementById('loginPrompt');
+    const whatsappBtn = document.getElementById('whatsappOrderBtn');
+
+    // ── WhatsApp order — builds a pre-filled message with cart items ──
+    whatsappBtn.addEventListener('click', () => {
+      const cart = getCart();
+      if (!cart.length) {
+        alert('Your cart is empty.');
+        return;
+      }
+
+      const lines = cart.map(item =>
+        '• ' + item.name + ' x' + item.quantity + ' — $' + (item.price * item.quantity).toFixed(2)
+      );
+      const total = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
+
+      const message =
+        'Hello ELIKEM DOTS! I would like to place an order:\n\n' +
+        lines.join('\n') +
+        '\n\n*Total: $' + total.toFixed(2) + '*' +
+        '\n\nPlease confirm availability and delivery details. Thank you!';
+
+      const url = 'https://wa.me/233544374581?text=' + encodeURIComponent(message);
+      window.open(url, '_blank', 'noopener');
+    });
+
+    // ── Online checkout — require login ──
+    onAuthStateChanged(auth, (user) => {
+      if (!user) {
+        checkoutBtn.addEventListener('click', (e) => {
+          e.preventDefault();
+          loginPrompt.style.display = 'block';
+          loginPrompt.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        });
+      }
+    });
+  </script>
+  <script>lucide.createIcons();</script>
+
+</body>
+</html>

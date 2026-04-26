@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sign Up - ELIKEM DOTS</title>
+  <link rel="stylesheet" href="css/style.css">
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+  <style>
+    .auth-error {
+      background: rgba(220,38,38,0.08);
+      border: 1px solid rgba(220,38,38,0.2);
+      color: #dc2626;
+      padding: 0.75rem 1rem;
+      border-radius: 10px;
+      font-size: 0.88rem;
+      margin-bottom: 1rem;
+      display: none;
+    }
+    .auth-success {
+      background: rgba(22,163,74,0.08);
+      border: 1px solid rgba(22,163,74,0.2);
+      color: #16a34a;
+      padding: 0.75rem 1rem;
+      border-radius: 10px;
+      font-size: 0.88rem;
+      margin-bottom: 1rem;
+      display: none;
+    }
+    .secret-code-hint {
+      background: rgba(37,99,235,0.06);
+      border: 1px solid rgba(37,99,235,0.15);
+      border-radius: 10px;
+      padding: 0.75rem 1rem;
+      font-size: 0.82rem;
+      color: #2563EB;
+      margin-top: 0.4rem;
+      display: flex;
+      align-items: flex-start;
+      gap: 0.5rem;
+    }
+    .code-boxes {
+      display: flex;
+      gap: 0.6rem;
+      margin-top: 0.4rem;
+    }
+    .code-boxes input {
+      width: 56px !important;
+      height: 56px;
+      text-align: center;
+      font-size: 1.4rem;
+      font-weight: 700;
+      border-radius: 12px !important;
+      padding: 0 !important;
+      letter-spacing: 0;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ── Video Background ── -->
+  <div class="video-bg-wrapper">
+    <video autoplay muted loop playsinline>
+      <source src="images/istockphoto-2150178677-640_adpp_is.mp4" type="video/mp4">
+      <source src="images/istockphoto-1035031016-640_adpp_is.mp4" type="video/mp4">
+    </video>
+  </div>
+
+  <!-- ── Navbar ── -->
+  <nav class="navbar">
+    <div class="nav-container">
+      <a href="index.html" class="logo">
+        <svg class="logo-svg" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+          <rect x="45" y="20" width="10" height="60" rx="2" fill="#2563EB"/>
+          <rect x="20" y="45" width="60" height="10" rx="2" fill="#2563EB"/>
+          <circle cx="25" cy="25" r="5" fill="#16a34a"/>
+          <circle cx="75" cy="25" r="5" fill="#16a34a"/>
+          <circle cx="25" cy="75" r="5" fill="#16a34a"/>
+          <circle cx="75" cy="75" r="5" fill="#16a34a"/>
+        </svg>
+        ELIKEM DOTS
+      </a>
+      <ul class="nav-links">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="shop.html">Pharmacy</a></li>
+        <li><a href="login.html">Login</a></li>
+        <li><a href="signup.html" class="active">Sign Up</a></li>
+      </ul>
+      <!-- Mobile action icons -->
+      <div class="nav-mobile-actions" id="navMobileActions">
+        <a href="cart.html" class="nav-cart-btn" id="navCartBtn" aria-label="Cart">
+          <svg viewBox="0 0 24 24"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 001.99 1.61h9.72a2 2 0 001.99-1.61L23 6H6"/></svg>
+          <span class="nav-cart-badge hidden" id="navCartBadge">0</span>
+        </a>
+        <a href="profile.html" class="nav-avatar-btn" id="navAvatarBtn" aria-label="Profile" style="display:none;">?</a>
+      </div>
+      <!-- Hamburger -->
+      <button class="hamburger" id="hamburgerBtn" aria-label="Open menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </nav>
+  <div class="mobile-nav" id="mobileNav">
+    <button class="mobile-nav-close" id="mobileNavClose">✕</button>
+    <a href="index.html">Home</a>
+    <a href="shop.html">Pharmacy</a>
+    <a href="services.html">Wound Care</a>
+    <a href="cart.html">Cart</a>
+    <a href="login.html">Login</a>
+    <a href="signup.html" class="mobile-nav-signup">Sign Up</a>
+  </div>
+
+  <!-- ── Signup Form ── -->
+  <section class="hero" style="padding: 5rem 1rem 2rem; align-items:flex-start; overflow-y:auto;">
+    <video class="hero-video" autoplay muted loop playsinline>
+      <source src="images/istockphoto-1035031016-640_adpp_is.mp4" type="video/mp4">
+      <source src="images/istockphoto-2150178677-640_adpp_is.mp4" type="video/mp4">
+    </video>
+    <div class="hero-overlay"></div>
+
+    <form id="signupForm" class="glass" style="width:100%; max-width:460px; padding:2.5rem; border-radius:28px; z-index:2; margin:auto;">
+      <div style="text-align:center; margin-bottom:1.8rem;">
+        <div class="form-icon-header"><i data-lucide="user-round-plus"></i></div>
+        <h2 style="font-size:1.7rem; font-weight:700; color:#111;">Create Account</h2>
+        <p style="color:#777; font-size:0.9rem; margin-top:0.3rem;">Join ELIKEM DOTS today</p>
+      </div>
+
+      <div id="signupError" class="auth-error"></div>
+      <div id="signupSuccess" class="auth-success">Account created! Redirecting to login...</div>
+
+      <div class="form-group">
+        <label>Email Address</label>
+        <input type="email" id="signupEmail" placeholder="your@email.com" required autocomplete="email">
+      </div>
+      <div class="form-group">
+        <label>Password</label>
+        <input type="password" id="signupPassword" placeholder="Min. 6 characters" required minlength="6" autocomplete="new-password">
+      </div>
+      <div class="form-group">
+        <label>Phone Number</label>
+        <input type="tel" id="signupPhone" placeholder="e.g. 0244123456" required>
+      </div>
+      <div class="form-group">
+        <label>Country</label>
+        <input type="text" id="signupCountry" placeholder="Your country" required>
+      </div>
+
+      <!-- 4-digit secret code -->
+      <div class="form-group">
+        <label style="display:flex; align-items:center; gap:0.4rem;">
+          4-Digit Secret Code
+          <span style="font-size:0.75rem; color:#888; font-weight:400;">(for password recovery)</span>
+        </label>
+        <div class="code-boxes">
+          <input type="password" maxlength="1" class="code-digit" inputmode="numeric" pattern="[0-9]" autocomplete="off">
+          <input type="password" maxlength="1" class="code-digit" inputmode="numeric" pattern="[0-9]" autocomplete="off">
+          <input type="password" maxlength="1" class="code-digit" inputmode="numeric" pattern="[0-9]" autocomplete="off">
+          <input type="password" maxlength="1" class="code-digit" inputmode="numeric" pattern="[0-9]" autocomplete="off">
+        </div>
+        <input type="hidden" id="signupSecretCode">
+        <div class="secret-code-hint">
+          <i data-lucide="shield-alert" style="width:14px;height:14px;stroke:#2563EB;flex-shrink:0;margin-top:1px;"></i>
+          <span>Remember this code. If you forget your password, you'll use it to verify your identity and receive a reset link.</span>
+        </div>
+      </div>
+
+      <button type="submit" class="btn" style="width:100%; padding:1.1rem; margin:0.5rem 0 0;">
+        Create Account
+      </button>
+      <p style="text-align:center; margin-top:1.2rem; color:#777; font-size:0.88rem;">
+        Already have an account? <a href="login.html" style="color:#2563EB; font-weight:600;">Login</a>
+      </p>
+    </form>
+  </section>
+
+  <script type="module">
+    import './js/ui.js';
+    import './js/auth.js';
+
+    // ── 4-box secret code widget ──
+    const digits = document.querySelectorAll('.code-digit');
+    const hidden = document.getElementById('signupSecretCode');
+
+    function syncCode() {
+      hidden.value = Array.from(digits).map(d => d.value).join('');
+    }
+
+    digits.forEach((input, i) => {
+      // Only allow digits
+      input.addEventListener('input', () => {
+        input.value = input.value.replace(/\D/g, '').slice(0, 1);
+        syncCode();
+        if (input.value && i < digits.length - 1) digits[i + 1].focus();
+      });
+
+      // Backspace moves back
+      input.addEventListener('keydown', (e) => {
+        if (e.key === 'Backspace' && !input.value && i > 0) {
+          digits[i - 1].focus();
+        }
+      });
+
+      // Paste support — spread digits across boxes
+      input.addEventListener('paste', (e) => {
+        e.preventDefault();
+        const pasted = (e.clipboardData.getData('text') || '').replace(/\D/g, '').slice(0, 4);
+        pasted.split('').forEach((ch, j) => {
+          if (digits[j]) digits[j].value = ch;
+        });
+        syncCode();
+        const next = Math.min(pasted.length, digits.length - 1);
+        digits[next].focus();
+      });
+    });
+  </script>
+  <script>lucide.createIcons();</script>
+
+</body>
+</html>

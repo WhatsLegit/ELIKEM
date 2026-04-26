@@ -1,0 +1,21 @@
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+
+    // ── Product images ──
+    // Anyone can view. Only admin can upload/delete.
+    match /products/{fileName} {
+      allow read: if true;
+      allow write: if request.auth != null
+        && firestore.get(/databases/(default)/documents/users/$(request.auth.uid)).data.role == 'admin';
+    }
+
+    // ── Testimonial photos ──
+    // Anyone can view. Logged-in users can upload their own photo.
+    match /testimonials/{fileName} {
+      allow read: if true;
+      allow write: if request.auth != null;
+    }
+
+  }
+}

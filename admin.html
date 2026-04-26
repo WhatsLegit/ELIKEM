@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard - ELIKEM DOTS</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/admin.css">
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+  <style>
+    #adminLoader {
+      position: fixed; inset: 0;
+      background: rgba(255,255,255,0.97);
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      z-index: 9000; gap: 1rem;
+    }
+    #adminLoader .loader-spinner {
+      width: 40px; height: 40px;
+      border: 3px solid rgba(0,0,0,0.1);
+      border-top-color: #2563EB;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    #adminDashboard { display: none; }
+
+    .pwd-feedback {
+      padding: 0.7rem 1rem; border-radius: 10px;
+      font-size: 0.88rem; margin-bottom: 1rem; display: none;
+    }
+    .pwd-error   { background: rgba(220,38,38,0.08); border: 1px solid rgba(220,38,38,0.2); color: #dc2626; }
+    .pwd-success { background: rgba(22,163,74,0.08);  border: 1px solid rgba(22,163,74,0.2);  color: #16a34a; }
+
+    .input-wrapper { position: relative; }
+    .input-wrapper input { padding-right: 3rem; }
+    .toggle-password {
+      position: absolute; right: 1rem; top: 50%; transform: translateY(-50%);
+      background: none; border: none; cursor: pointer; color: #999;
+      padding: 0; display: flex; align-items: center; transition: color 0.2s;
+    }
+    .toggle-password:hover { color: #111; }
+    .toggle-password svg { width: 17px; height: 17px; stroke: currentColor; }
+
+    .pwd-strength { height: 4px; border-radius: 2px; margin-top: 6px; background: rgba(0,0,0,0.08); overflow: hidden; }
+    .pwd-strength-bar { height: 100%; border-radius: 2px; transition: width 0.3s, background 0.3s; width: 0%; }
+  </style>
+</head>
+<body>
+
+  <!-- Auth Loading -->
+  <div id="adminLoader">
+    <div class="loader-spinner"></div>
+    <p style="color:#777; font-size:0.9rem;">Verifying access...</p>
+  </div>
+
+  <!-- Video Background -->
+  <div class="video-bg-wrapper">
+    <video autoplay muted loop playsinline>
+      <source src="images/istockphoto-1035031016-640_adpp_is.mp4" type="video/mp4">
+      <source src="images/istockphoto-2150178677-640_adpp_is.mp4" type="video/mp4">
+    </video>
+  </div>
+
+  <div id="adminDashboard">
+
+    <!-- Navbar -->
+    <nav class="navbar">
+      <div class="nav-container">
+        <a href="index.html" class="logo">
+          <svg class="logo-svg" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+            <rect x="45" y="20" width="10" height="60" rx="2" fill="#2563EB"/>
+            <rect x="20" y="45" width="60" height="10" rx="2" fill="#2563EB"/>
+            <circle cx="25" cy="25" r="5" fill="#16a34a"/>
+            <circle cx="75" cy="25" r="5" fill="#16a34a"/>
+            <circle cx="25" cy="75" r="5" fill="#16a34a"/>
+            <circle cx="75" cy="75" r="5" fill="#16a34a"/>
+          </svg>
+          <span style="display:none;" class="logo-text-hide">ELIKEM DOTS</span>
+          <span>Admin</span>
+        </a>
+
+        <div class="admin-user-info">
+          <!-- Email badge — hidden on mobile via CSS -->
+          <div class="admin-email-badge">
+            <i data-lucide="user-round"></i>
+            <span id="adminEmail">Admin</span>
+          </div>
+
+          <!-- Change password — icon only on mobile -->
+          <button onclick="document.getElementById('changePasswordModal').classList.add('open')"
+            class="btn btn-outline"
+            style="padding:0.5rem 1rem; font-size:0.82rem; display:flex; align-items:center; gap:0.4rem;">
+            <i data-lucide="key-round"></i>
+            <span class="btn-label">Password</span>
+          </button>
+
+          <!-- Logout — icon only on mobile -->
+          <button onclick="adminLogout()" class="btn"
+            style="padding:0.5rem 1rem; font-size:0.82rem; display:flex; align-items:center; gap:0.4rem;">
+            <i data-lucide="log-out"></i>
+            <span class="btn-label">Logout</span>
+          </button>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Dashboard content -->
+    <div class="admin-container" style="padding-top: 5.5rem;">
+
+      <div class="admin-header">
+        <h1>Admin Dashboard</h1>
+        <p style="color:#888; margin-top:0.3rem; font-size:0.88rem;">Manage products, orders, users and more</p>
+      </div>
+
+      <!-- Quick stats -->
+      <div class="admin-stats">
+        <div class="admin-stat-card">
+          <div class="stat-number" id="statProducts">—</div>
+          <div class="stat-label">Products</div>
+        </div>
+        <div class="admin-stat-card">
+          <div class="stat-number" id="statOrders">—</div>
+          <div class="stat-label">Orders</div>
+        </div>
+        <div class="admin-stat-card">
+          <div class="stat-number" id="statBookings">—</div>
+          <div class="stat-label">Bookings</div>
+        </div>
+        <div class="admin-stat-card">
+          <div class="stat-number" id="statUsers">—</div>
+          <div class="stat-label">Users</div>
+        </div>
+        <div class="admin-stat-card">
+          <div class="stat-number" id="statMessages">—</div>
+          <div class="stat-label">Messages</div>
+        </div>
+      </div>
+
+      <!-- Tab Navigation — horizontally scrollable -->
+      <div class="admin-nav">
+        <button data-tab="productsSection" class="active">
+          <i data-lucide="package"></i> Products
+        </button>
+        <button data-tab="ordersSection">
+          <i data-lucide="shopping-cart"></i> Orders
+        </button>
+        <button data-tab="bookingsSection">
+          <i data-lucide="calendar-check"></i> Bookings
+        </button>
+        <button data-tab="usersSection">
+          <i data-lucide="users"></i> Users
+        </button>
+        <button data-tab="testimonialsSection">
+          <i data-lucide="message-square"></i> Reviews
+        </button>
+        <button data-tab="messagesSection">
+          <i data-lucide="mail"></i> Messages
+        </button>
+      </div>
+
+      <!-- ── Products ── -->
+      <div id="productsSection" class="admin-section active">
+        <div class="admin-section-header">
+          <h2>Products</h2>
+          <button class="btn" onclick="document.getElementById('addProductModal').classList.add('open')"
+            style="display:flex;align-items:center;gap:0.4rem;padding:0.6rem 1.2rem;font-size:0.85rem;">
+            <i data-lucide="plus"></i> Add Product
+          </button>
+        </div>
+        <div class="table-wrapper">
+          <table class="admin-table">
+            <thead>
+              <tr><th>Image</th><th>Name</th><th>Category</th><th>Price</th><th>Actions</th></tr>
+            </thead>
+            <tbody id="productsTable">
+              <tr><td colspan="5" style="text-align:center;padding:2rem;color:#aaa;">Loading...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ── Orders ── -->
+      <div id="ordersSection" class="admin-section">
+        <div class="admin-section-header">
+          <h2>Orders</h2>
+        </div>
+        <div class="table-wrapper">
+          <table class="admin-table">
+            <thead>
+              <tr><th>Customer</th><th>Phone</th><th>Total</th><th>Date</th><th>Status</th><th>Update</th></tr>
+            </thead>
+            <tbody id="ordersTable">
+              <tr><td colspan="6" style="text-align:center;padding:2rem;color:#aaa;">Loading...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ── Bookings ── -->
+      <div id="bookingsSection" class="admin-section">
+        <div class="admin-section-header">
+          <h2>Wound Care Bookings</h2>
+        </div>
+        <div class="table-wrapper">
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th>Name / Phone</th>
+                <th>Appt. Date</th>
+                <th>Status</th>
+                <th>Service</th>
+                <th>Notes / Address</th>
+                <th>Submitted</th>
+                <th>Update</th>
+                <th>Delete</th>
+              </tr>
+            </thead>
+            <tbody id="bookingsTable">
+              <tr><td colspan="8" style="text-align:center;padding:2rem;color:#aaa;">Loading...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ── Users ── -->
+      <div id="usersSection" class="admin-section">
+        <div class="admin-section-header">
+          <h2>Users</h2>
+        </div>
+        <div class="table-wrapper">
+          <table class="admin-table">
+            <thead>
+              <tr><th>Name / Email</th><th>Phone</th><th>Country</th><th>Role</th><th>Status</th><th>Actions</th></tr>
+            </thead>
+            <tbody id="usersTable">
+              <tr><td colspan="6" style="text-align:center;padding:2rem;color:#aaa;">Loading...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ── Testimonials ── -->
+      <div id="testimonialsSection" class="admin-section">
+        <div class="admin-section-header">
+          <h2>Customer Reviews</h2>
+          <button class="btn" onclick="document.getElementById('addTestimonialModal').classList.add('open')"
+            style="display:flex;align-items:center;gap:0.4rem;padding:0.6rem 1.2rem;font-size:0.85rem;">
+            <i data-lucide="plus"></i> Add Review
+          </button>
+        </div>
+        <div id="testimonialsCards" class="testimonials-grid">
+          <p style="color:#aaa;padding:2rem;grid-column:1/-1;text-align:center;">Loading...</p>
+        </div>
+      </div>
+
+      <!-- ── Messages ── -->
+      <div id="messagesSection" class="admin-section">
+        <div class="admin-section-header">
+          <h2>Contact Messages</h2>
+        </div>
+        <div class="table-wrapper">
+          <table class="admin-table">
+            <thead>
+              <tr><th>Name / Phone</th><th>Email</th><th>Message</th><th>Date</th><th>Delete</th></tr>
+            </thead>
+            <tbody id="messagesTable">
+              <tr><td colspan="5" style="text-align:center;padding:2rem;color:#aaa;">Loading...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+  </div><!-- end #adminDashboard -->
+
+  <!-- ── Add Testimonial Modal ── -->
+  <div id="addTestimonialModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="document.getElementById('addTestimonialModal').classList.remove('open')">&times;</span>
+      <h3 style="margin-bottom:1.2rem; font-size:1.2rem; font-weight:700;">Add Review</h3>
+      <form id="addTestimonialForm">
+        <div class="form-group">
+          <label>Customer Name</label>
+          <input type="text" name="name" placeholder="Customer name" required>
+        </div>
+        <div class="form-group">
+          <label>Message</label>
+          <textarea name="message" rows="3" placeholder="Customer's review..." required></textarea>
+        </div>
+        <div class="form-group">
+          <label>Rating</label>
+          <select name="rating" required>
+            <option value="5">★★★★★ — 5 stars</option>
+            <option value="4">★★★★☆ — 4 stars</option>
+            <option value="3">★★★☆☆ — 3 stars</option>
+            <option value="2">★★☆☆☆ — 2 stars</option>
+            <option value="1">★☆☆☆☆ — 1 star</option>
+          </select>
+        </div>
+        <button type="submit" class="btn" style="width:100%; padding:1rem;">Save Review</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ── Add Product Modal ── -->
+  <div id="addProductModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="document.getElementById('addProductModal').classList.remove('open')">&times;</span>
+      <h3 style="margin-bottom:1.2rem; font-size:1.2rem; font-weight:700;">Add New Product</h3>
+      <form id="addProductForm">
+        <div class="form-group">
+          <label>Product Name</label>
+          <input type="text" name="name" placeholder="Product name" required>
+        </div>
+        <div class="form-group">
+          <label>Category</label>
+          <select name="category" required>
+            <option value="Medicines">Medicines</option>
+            <option value="Diabetes Care Products">Diabetes Care</option>
+            <option value="Wound Care Supplies">Wound Care</option>
+            <option value="Vitamins and Supplements">Vitamins</option>
+            <option value="Medical Equipment">Equipment</option>
+            <option value="First Aid Supplies">First Aid</option>
+            <option value="Personal Care and Hygiene Products">Personal Care</option>
+            <option value="Skin Care Products">Skin Care</option>
+            <option value="Health Monitoring Devices">Monitoring</option>
+            <option value="Prescription Medicines">Prescription</option>
+            <option value="Over-the-Counter Medicines">OTC</option>
+            <option value="Cold and Flu Medicines">Cold/Flu</option>
+            <option value="Digestive Health Medicines">Digestive</option>
+            <option value="Allergy Medicines">Allergy</option>
+            <option value="Antiseptics and Disinfectants">Antiseptics</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Description</label>
+          <textarea name="description" rows="3" placeholder="Product description..." required></textarea>
+        </div>
+        <div class="form-group">
+          <label>Price ($)</label>
+          <input type="number" name="price" step="0.01" min="0" placeholder="0.00" required>
+        </div>
+        <div class="form-group">
+          <label>Product Image</label>
+          <div class="file-upload" id="fileUploadArea">
+            <input type="file" name="image" accept="image/*" style="display:none;" id="imageInput">
+            <label for="imageInput" style="cursor:pointer; display:flex; flex-direction:column; align-items:center; gap:0.5rem;">
+              <img id="imagePreview" src="" alt="" style="display:none; width:100%; max-height:140px; object-fit:cover; border-radius:10px; margin-bottom:0.4rem;">
+              <span id="uploadLabel" style="display:flex; align-items:center; gap:0.5rem; color:#777;">
+                <i data-lucide="image-plus"></i> Tap to upload image
+              </span>
+              <span id="uploadedName" style="display:none; font-size:0.8rem; color:#555;"></span>
+            </label>
+          </div>
+          <p style="font-size:0.75rem; color:#aaa; margin-top:5px;">Cloudinary · JPG, PNG, WEBP</p>
+        </div>
+        <button type="submit" class="btn" style="width:100%; padding:1rem;">Add Product</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ── Edit Product Modal ── -->
+  <div id="editProductModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="document.getElementById('editProductModal').classList.remove('open')">&times;</span>
+      <h3 style="margin-bottom:1.2rem; font-size:1.2rem; font-weight:700;">Edit Product</h3>
+      <form id="editProductForm">
+        <input type="hidden" id="editProductId">
+        <div class="form-group">
+          <label>Product Name</label>
+          <input type="text" id="editProductName" name="name" placeholder="Product name" required>
+        </div>
+        <div class="form-group">
+          <label>Category</label>
+          <select id="editProductCat" name="category" required>
+            <option value="Medicines">Medicines</option>
+            <option value="Diabetes Care Products">Diabetes Care</option>
+            <option value="Wound Care Supplies">Wound Care</option>
+            <option value="Vitamins and Supplements">Vitamins</option>
+            <option value="Medical Equipment">Equipment</option>
+            <option value="First Aid Supplies">First Aid</option>
+            <option value="Personal Care and Hygiene Products">Personal Care</option>
+            <option value="Skin Care Products">Skin Care</option>
+            <option value="Health Monitoring Devices">Monitoring</option>
+            <option value="Prescription Medicines">Prescription</option>
+            <option value="Over-the-Counter Medicines">OTC</option>
+            <option value="Cold and Flu Medicines">Cold/Flu</option>
+            <option value="Digestive Health Medicines">Digestive</option>
+            <option value="Allergy Medicines">Allergy</option>
+            <option value="Antiseptics and Disinfectants">Antiseptics</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Description</label>
+          <textarea id="editProductDesc" name="description" rows="3" placeholder="Product description..." required></textarea>
+        </div>
+        <div class="form-group">
+          <label>Price ($)</label>
+          <input type="number" id="editProductPrice" name="price" step="0.01" min="0" placeholder="0.00" required>
+        </div>
+        <div class="form-group">
+          <label>Replace Image (optional)</label>
+          <img id="editImagePreview" src="" alt="Current image" style="display:none;width:100%;max-height:120px;object-fit:cover;border-radius:10px;margin-bottom:0.5rem;">
+          <div class="file-upload">
+            <input type="file" name="editImage" accept="image/*" style="display:none;" id="editImageInput">
+            <label for="editImageInput" style="cursor:pointer;display:flex;align-items:center;justify-content:center;gap:0.5rem;color:#777;">
+              <i data-lucide="image-plus"></i> Upload new image (leave blank to keep current)
+            </label>
+          </div>
+        </div>
+        <button type="submit" class="btn" style="width:100%; padding:1rem;">Save Changes</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ── Change Password Modal ── -->
+  <div id="changePasswordModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="document.getElementById('changePasswordModal').classList.remove('open'); document.getElementById('changePasswordForm').reset(); document.getElementById('pwdError').style.display='none'; document.getElementById('pwdSuccess').style.display='none';">&times;</span>
+
+      <div style="display:flex; align-items:center; gap:0.8rem; margin-bottom:1.2rem;">
+        <div style="width:40px;height:40px;background:rgba(37,99,235,0.1);border-radius:12px;display:flex;align-items:center;justify-content:center;">
+          <i data-lucide="key-round" style="width:20px;height:20px;stroke:#2563EB;"></i>
+        </div>
+        <div>
+          <h3 style="font-size:1.1rem; font-weight:700; color:#111;">Change Password</h3>
+          <p style="font-size:0.8rem; color:#888; margin-top:1px;">Enter current password to confirm</p>
+        </div>
+      </div>
+
+      <div id="pwdError" class="pwd-feedback pwd-error"></div>
+      <div id="pwdSuccess" class="pwd-feedback pwd-success"></div>
+
+      <form id="changePasswordForm">
+        <div class="form-group">
+          <label>Current Password</label>
+          <div class="input-wrapper">
+            <input type="password" id="currentPassword" placeholder="Current password" required autocomplete="current-password">
+            <button type="button" class="toggle-password" onclick="togglePwdField('currentPassword', this)">
+              <i data-lucide="eye"></i>
+            </button>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>New Password</label>
+          <div class="input-wrapper">
+            <input type="password" id="newPassword" placeholder="Min. 6 characters" required minlength="6" autocomplete="new-password" oninput="updateStrength(this.value)">
+            <button type="button" class="toggle-password" onclick="togglePwdField('newPassword', this)">
+              <i data-lucide="eye"></i>
+            </button>
+          </div>
+          <div class="pwd-strength"><div class="pwd-strength-bar" id="strengthBar"></div></div>
+          <p id="strengthLabel" style="font-size:0.75rem; color:#999; margin-top:3px;"></p>
+        </div>
+        <div class="form-group">
+          <label>Confirm New Password</label>
+          <div class="input-wrapper">
+            <input type="password" id="confirmPassword" placeholder="Repeat new password" required autocomplete="new-password">
+            <button type="button" class="toggle-password" onclick="togglePwdField('confirmPassword', this)">
+              <i data-lucide="eye"></i>
+            </button>
+          </div>
+        </div>
+        <button type="submit" class="btn" style="width:100%; padding:1rem; display:flex; align-items:center; justify-content:center; gap:0.5rem;">
+          <i data-lucide="shield-check"></i> Update Password
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    function togglePwdField(fieldId, btn) {
+      const input = document.getElementById(fieldId);
+      const icon  = btn.querySelector('i');
+      input.type  = input.type === 'password' ? 'text' : 'password';
+      icon.setAttribute('data-lucide', input.type === 'password' ? 'eye' : 'eye-off');
+      lucide.createIcons();
+    }
+
+    function updateStrength(value) {
+      const bar   = document.getElementById('strengthBar');
+      const label = document.getElementById('strengthLabel');
+      let score = 0;
+      if (value.length >= 6)          score++;
+      if (value.length >= 10)         score++;
+      if (/[A-Z]/.test(value))        score++;
+      if (/[0-9]/.test(value))        score++;
+      if (/[^A-Za-z0-9]/.test(value)) score++;
+      const levels = [
+        { pct:'0%',   color:'transparent', text:'' },
+        { pct:'25%',  color:'#ef4444',     text:'Weak' },
+        { pct:'50%',  color:'#f97316',     text:'Fair' },
+        { pct:'75%',  color:'#eab308',     text:'Good' },
+        { pct:'100%', color:'#22c55e',     text:'Strong' },
+      ];
+      const lv = levels[Math.min(score, 4)];
+      bar.style.width      = lv.pct;
+      bar.style.background = lv.color;
+      label.textContent    = lv.text;
+      label.style.color    = lv.color;
+    }
+
+    // Hide button text labels on small screens
+    function updateBtnLabels() {
+      const labels = document.querySelectorAll('.btn-label');
+      labels.forEach(el => {
+        el.style.display = window.innerWidth < 640 ? 'none' : 'inline';
+      });
+    }
+    updateBtnLabels();
+    window.addEventListener('resize', updateBtnLabels);
+  </script>
+
+  <script type="module">
+    import './js/admin.js';
+  </script>
+
+  <script>
+    lucide.createIcons();
+
+    // Image preview
+    document.addEventListener('DOMContentLoaded', () => {
+      const input = document.getElementById('imageInput');
+      if (!input) return;
+      input.addEventListener('change', () => {
+        const file = input.files[0];
+        if (!file) return;
+        const preview = document.getElementById('imagePreview');
+        const label   = document.getElementById('uploadLabel');
+        const nameEl  = document.getElementById('uploadedName');
+        const reader  = new FileReader();
+        reader.onload = (e) => {
+          preview.src           = e.target.result;
+          preview.style.display = 'block';
+          label.style.display   = 'none';
+          nameEl.textContent    = file.name;
+          nameEl.style.display  = 'block';
+        };
+        reader.readAsDataURL(file);
+      });
+    });
+  </script>
+</body>
+</html>
